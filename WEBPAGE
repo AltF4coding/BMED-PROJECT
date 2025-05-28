@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineer the Lift!</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    .container { background: white; padding: 20px; border-radius: 10px; max-width: 700px; margin: auto; }
+    h1, h2 { color: #2c3e50; }
+    .options button { margin: 5px; padding: 10px 15px; }
+    .results { margin-top: 20px; font-weight: bold; white-space: pre-line; }
+    .info-section { margin-bottom: 30px; }
+    .info-section img { max-width: 100%; margin-top: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-section">
+      <h1>Engineer the Lift!</h1>
+      <p>This simulation helps you explore exercise risks and bioengineered solutions for people with physical disabilities. Select a condition (e.g., amputation, Parkinson's, partial paralysis), identify risky exercises, and evaluate the best bioengineering response: avoid the activity, isolate a limb, or use a prosthetic or assistive device.</p>
+      <p>Use the options below to test your decisions and learn how to adapt equipment and training safely and effectively for individual needs. BMED engineering tells us that treating human disorders with creative, and individual solutions is the best method to help allow everyone to excel.</p>
+      <h2>Background: Challenges in Inclusive Gym Design</h2>
+      <p><strong>Biological Aspects:</strong> Individuals with disabilities often experience altered muscle coordination, joint loading, or range of motion, requiring careful consideration of biomechanics and physiology when designing safe workout routines.</p>
+      <p><strong>Engineering Considerations:</strong> Conventional gym equipment is often symmetric, rigid, or assumes full limb mobility. Engineering adaptations like modular machines, adaptive grips, or smart feedback systems allow more inclusive and safer training.</p>
+      <p><strong>Ecological/Societal Impact:</strong> Designing universally accessible exercise systems reduces inequality in fitness, enhances rehabilitation access, and encourages healthier lifestyles for all. It can also reduce long-term healthcare costs and promote independence.</p>
+    </div>
+
+    <div class="section">
+      <h2>Step 1: Select a Disability</h2>
+      <div class="options" id="condition-options">
+        <button onclick="selectCondition('Parkinson\'s Disease')">Parkinson's Disease</button>
+        <button onclick="selectCondition('Below-Knee Amputee')">Below-Knee Amputee</button>
+        <button onclick="selectCondition('Above-Knee Amputee')">Above-Knee Amputee</button>
+        <button onclick="selectCondition('Hand Amputee')">Hand Amputee</button>
+        <button onclick="selectCondition('Lower Arm Amputee')">Lower Arm Amputee</button>
+        <button onclick="selectCondition('Upper Arm Amputee')">Upper Arm Amputee</button>
+        <button onclick="selectCondition('Partial Paralysis')">Partial Paralysis</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Step 2: Choose a Response Strategy</h2>
+      <div class="options" id="solution-options">
+        <button onclick="selectSolution('Isolate Single Limb Movement')">Isolate Single Limb Movement</button>
+        <button onclick="selectSolution('Use Assistive Device/Prosthetic')">Use Assistive Device/Prosthetic</button>
+        <button onclick="selectSolution('Avoid Risky Exercise')">Avoid Risky Exercise</button>
+        <button onclick="selectSolution('Train Core or Supporting Muscles')">Train Core or Supporting Muscles</button>
+        <button onclick="selectSolution('Rehabilitation-Focused Program')">Rehabilitation-Focused Program</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Step 3: Analyze the Match</h2>
+      <button onclick="simulate()">Run Simulation</button>
+      <div id="results" class="results"></div>
+    </div>
+    <p>Coded and reasearched by LP</p>
+  </div>
+
+  <script>
+    let selectedCondition = '';
+    let selectedSolution = '';
+
+    const conditionSolutions = {
+  "Parkinson's Disease": {
+        "Isolate Single Limb Movement": [60, "Helps reduce fall risk, but may not address tremors or coordination issues."],
+        "Use Assistive Device/Prosthetic": [50, "Limited use for Parkinson's symptoms unless device stabilizes motion."],
+        "Avoid Risky Exercise": [90, "Best choice when balance and motor control are compromised."],
+        "Train Core or Supporting Muscles": [70, "Can support stability and mobility, but must be closely monitored."],
+        "Rehabilitation-Focused Program": [85, "Provides targeted support while minimizing risk."],
+      },
+      "Below-Knee Amputee": {
+        "Isolate Single Limb Movement": [70, "Useful for focusing on non-affected side, but imbalanced training."],
+        "Use Assistive Device/Prosthetic": [90, "Prosthetics enable dynamic, balanced movement with correct support."],
+        "Avoid Risky Exercise": [60, "May overly restrict useful activity when prosthetics can help."],
+        "Train Core or Supporting Muscles": [75, "Improves stability and reduces fall risk."],
+        "Rehabilitation-Focused Program": [80, "Custom programs promote recovery and adaptation."],
+      },
+      "Above-Knee Amputee": {
+        "Isolate Single Limb Movement": [60, "Can maintain strength, but neglects overall mobility."],
+        "Use Assistive Device/Prosthetic": [85, "Advanced prosthetics support functional mobility."],
+        "Avoid Risky Exercise": [70, "May protect from instability, but limits adaptation."],
+        "Train Core or Supporting Muscles": [78, "Improves gait compensation and core strength."],
+        "Rehabilitation-Focused Program": [82, "Provides guided, progressive therapy."],
+      },
+      "Hand Amputee": {
+        "Isolate Single Limb Movement": [75, "Strengthens usable limb, limits bilateral training."],
+        "Use Assistive Device/Prosthetic": [85, "Enables gripping and bilateral movement if adapted correctly."],
+        "Avoid Risky Exercise": [65, "May be unnecessary if adapted grips are available."],
+        "Train Core or Supporting Muscles": [70, "Keeps other systems engaged."],
+        "Rehabilitation-Focused Program": [80, "Promotes motor learning and adaptation."],
+      },
+      "Lower Arm Amputee": {
+        "Isolate Single Limb Movement": [70, "Maintains strength but doesn’t support full-body balance."],
+        "Use Assistive Device/Prosthetic": [88, "Customized prosthetics restore many upper-limb functions."],
+        "Avoid Risky Exercise": [60, "Often avoidable with proper tools and planning."],
+        "Train Core or Supporting Muscles": [72, "Aids posture and movement compensation."],
+        "Rehabilitation-Focused Program": [83, "Comprehensive development path."],
+      },
+      "Upper Arm Amputee": {
+        "Isolate Single Limb Movement": [60, "Focuses on what remains, but limits overall strength symmetry."],
+        "Use Assistive Device/Prosthetic": [80, "Advanced prosthetics provide partial support."],
+        "Avoid Risky Exercise": [70, "Practical in cases of poor prosthetic integration."],
+        "Train Core or Supporting Muscles": [75, "Supports posture and shoulder alignment."],
+        "Rehabilitation-Focused Program": [82, "Effective gradual reconditioning."],
+      },
+      "Partial Paralysis": {
+        "Isolate Single Limb Movement": [65, "Useful for unilateral training, helps prevent atrophy."],
+        "Use Assistive Device/Prosthetic": [75, "Can enhance function depending on level of paralysis."],
+        "Avoid Risky Exercise": [85, "Safest route when there's loss of control or sensation."],
+        "Train Core or Supporting Muscles": [77, "Supports balance and compensatory strength."],
+        "Rehabilitation-Focused Program": [90, "Customized therapy targets limitations precisely."],
+      }
+    };
+
+    function selectCondition(condition) {
+      selectedCondition = condition;
+      document.getElementById('results').innerText = `Selected Condition: ${condition}`;
+    }
+
+    function selectSolution(solution) {
+      selectedSolution = solution;
+      document.getElementById('results').innerText = `Selected Strategy: ${solution}`;
+    }
+
+    function simulate() {
+      const resultsEl = document.getElementById('results');
+
+      if (!selectedCondition || !selectedSolution) {
+        resultsEl.innerText = 'Please select both a condition and a strategy to simulate.';
+        return;
+      }
+
+      const solutions = conditionSolutions[selectedCondition];
+      if (!solutions || !solutions[selectedSolution]) {
+        resultsEl.innerText = `No data available for the combination of "${selectedCondition}" and "${selectedSolution}".`;
+        return;
+      }
+
+      const [score, explanation] = solutions[selectedSolution];
+      const feedback = `Simulating strategy for ${selectedCondition}...\nEffectiveness Score: ${score}/100\nExplanation: ${explanation}`;
+      resultsEl.innerText = feedback;
+    }
+  </script>
+</body>
+</html>
